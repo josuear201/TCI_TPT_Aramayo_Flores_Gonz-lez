@@ -9,6 +9,8 @@ str load2(const char* s);
 
 void print_string(str s);
 
+int compare_str(str s1, str s2);
+str concat_str(str s1, str s2);
 //SUGERENCIA
 /*
 int compare_str(str s1, str s2) ;
