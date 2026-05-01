@@ -305,32 +305,31 @@ void search(Tdata list, Tdata elem){
 		printf("\nEl elemento esta en la lista");
 }
 str concat_str_ast(Tdata s1, Tdata s2) {
-	str R;
-	int L1,L2;
+	Tdata R;
 	str C;
 	
 	if (s1->nodeType != STR || s2->nodeType != STR) {
-		printf("Error: Los parámetros para concatenar deben ser STR.\n");
+		printf("Error: Los parÃ¡metros para concatenar deben ser STR.\n");
 		return NULL;
 	}
+	C=concat_str(s1->string, s2->string);
 	
-	L1 = strlen(s1->string);
-	L2 = strlen(s2->string);
-	
-	C = (str)malloc(L1 + L2 + 1);
-	
-	if (C == NULL) {
-		R = NULL;}
-	else{
-		strcpy(C, s1->string);
-		strcat(C, s2->string);
-		
-		R = create_str_ast(C);}
-	
-	free(C);
+	R->string=C;
 	
 	return R;
 }
+int compare_str_ast(Tdata s1, Tdata s2) {
+	int r;
+	
+	if (s1->nodeType != STR || s2->nodeType != STR) {
+		printf("Error: Intento de comparar tipos que no son STR.\n");
+		r = -1; 
+	}
+	r = compare_str(s1->string, s2->string);
+	
+	return r;
+}
+
 int compare_str_ast(Tdata s1, Tdata s2) {
 	int r;
 	
