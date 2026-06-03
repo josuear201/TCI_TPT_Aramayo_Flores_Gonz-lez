@@ -18,13 +18,12 @@ los estados y símbolos se usan como índices para armar la matriz que represent
 
 Eso la vuelve bastante más práctica en situaciones donde el autómata maneja una cantidad grande de transiciones, ya que el tiempo de consulta no crece con la cantidad de elementos guardados.
 - ## Proposicion 4 - Delta Funcional
-
-
-- ## Proposicion 5 - Estados Compuestos para Determinización
 Se propone usar un AST para representar todos los conjuntos que forman al automata. Un conjunto de estados, otro conjunto de caracteres para formar el alfabeto y el conjunto de estados de aceptación.  
 
 Mientras que para las tranciciones se crea un arreglo con el tamaño guardado. Este tiene de elementos a los *deltas*. Usando una estructura que indica el estado y el símbolo junto al conjunto de destinaciones correspondientes.  
 
-Esta proposición es la más directa en cuando se trata de representar al automata en base a su definición y compocición.  
+Esta proposición es la más directa en cuando se trata de representar al automata en base a su definición y compocición.
+
+- ## Proposicion 5 - Estados Compuestos para Determinización  
 
 - ## Proposicion que utilizaremos
