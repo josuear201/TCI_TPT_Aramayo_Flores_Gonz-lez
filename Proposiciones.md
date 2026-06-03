@@ -3,6 +3,7 @@ Cada propuesta presenta una manera de crear un automata finito representando sus
 
 - ## Proposicion 1 - Delta como Lista de Transiciones
 La función de transición Δ se guarda como una lista donde cada elemento tiene el estado de origen, el símbolo y los estados a los que puede ir. Esto modela directamente cómo trabaja δ(q,a), ya que cada transición aparece guardada por separado dentro de la estructura. Por ejemplo, si δ(q0,a) = {q1,q2}, quiere decir que desde q0, al leer a, el autómata puede moverse a q1 o q2. Funciona para AFD y AFND por igual, dado que el conjunto destino puede tener uno o más estados. Cada transición ocupa su propio lugar en la lista, lo que la hace fácil de entender e implementar.
+
 Ahora bien, cuando se necesita consultar una transición hay que recorrer la lista hasta dar con el estado y símbolo que se buscan. Por eso, el tiempo que tarda la búsqueda depende de cuántas transiciones haya guardadas.
 
 - ## Proposicion 2 - Delta Indexado por Estado
@@ -14,6 +15,7 @@ El automata en sí es el padre de la lista principal. Este además tiene el nomb
 
 - ## Proposicion 3 - Delta como Matriz Dispersa
 los estados y símbolos se usan como índices para armar la matriz que representa Δ. A cada par de estado y símbolo le corresponde una celda con los estados destino de esa combinación puntual. Tomando q0 y el símbolo a como índice 0, alcanza con ir directo a esa celda para obtener δ(q0,a), sin ningún paso intermedio. Esto es lo que la diferencia de la lista: no hace falta buscar nada, cada transición ya tiene su lugar fijo dentro de la estructura. Conociendo los índices, el acceso es inmediato. No importa cuántas transiciones tenga el autómata, llegar a una en particular siempre cuesta lo mismo.
+
 Eso la vuelve bastante más práctica en situaciones donde el autómata maneja una cantidad grande de transiciones, ya que el tiempo de consulta no crece con la cantidad de elementos guardados.
 - ## Proposicion 4 - Delta Funcional
 
