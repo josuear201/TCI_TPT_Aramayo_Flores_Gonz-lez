@@ -14,8 +14,7 @@ El automata en sí es el padre de la lista principal. Este además tiene el nomb
 
 - ## Proposicion 3 - Delta como Matriz Dispersa
    los estados y símbolos se usan como índices para armar la matriz que representa Δ. A cada par de estado y símbolo le corresponde una celda con los estados destino de esa combinación puntual. Tomando q0 y el símbolo a como índice 0, alcanza con ir directo a esa celda para obtener δ(q0,a), sin ningún paso intermedio. Esto es lo que la diferencia de la lista: no hace falta buscar nada, cada transición ya tiene su lugar fijo dentro de la estructura. Conociendo los índices, el acceso es inmediato. No importa cuántas transiciones tenga el autómata, llegar a una en particular siempre cuesta lo mismo.
-   Eso la vuelve bastante más práctica en situaciones donde el autómata maneja una cantidad grande de transiciones, ya que el tiempo de consulta no crece con la cantidad de elementos guardados, a diferencia de lo que pasa con la lista.
-
+   Eso la vuelve bastante más práctica en situaciones donde el autómata maneja una cantidad grande de transiciones, ya que el tiempo de consulta no crece con la cantidad de elementos guardados.
 - ## Proposicion 4 - Delta Funcional
 
 
