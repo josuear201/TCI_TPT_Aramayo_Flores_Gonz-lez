@@ -1,4 +1,4 @@
-#include "ing_automata.h"
+#include "automata.h"
 //transiciones
 transicion* ing_transicion(FILE* f){
 	transicion* nvo = (transicion*)malloc(sizeof(transicion));
