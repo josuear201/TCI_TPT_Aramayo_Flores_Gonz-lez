@@ -27,6 +27,11 @@ typedef struct{
 //ingreso desde TXT
 automata* ing_automata(FILE* f);
 std* ing_std(FILE* f);
+
+// Validación de cadenas
+int aceptar_cadena_dfa(automata* A, const char* cadena);
+int aceptar_cadena_nfa(automata* A, const char* cadena);
+std* buscar_estado(std* Q, str nombre_estado);
 std* carga_lista(FILE* f);
 transicion* ing_transicion(FILE* f);
 transicion* carga_transiciones(FILE* f);
