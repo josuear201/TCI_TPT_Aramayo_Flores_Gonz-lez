@@ -275,3 +275,144 @@ void mostrar_automata(automata* A){
 	mostrar_estados(A->Q);
 	print_string("\n");}
 }
+// Buscar estado
+std* buscar_estado(std* Q, str nombre_estado) {
+	while (Q != NULL) {
+		if (compare_str(Q->nom->string, nombre_estado) == 0) {
+			return Q;
+		}
+		Q = Q->sig;
+	}
+	return NULL; // Estado no encontrado
+}
+// Aceptar cadena determinista
+int aceptar_cadena_dfa(automata* A, const char* cadena) {
+	if (A == NULL) return 0;
+	
+	std* estado_actual = buscar_estado(A->Q, A->q0->string);
+	int i = 0;
+	
+	while (cadena[i] != '\0') {
+		char simb_act[2] = {cadena[i], '\0'};
+		transicion* t = estado_actual->delta;
+		int transicion_encontrada = 0;
+		
+		while (t != NULL) {
+			if (compare_str(t->simb->string, simb_act) == 0) {
+				if (t->dest != NULL && t->dest->data != NULL) {
+					estado_actual = buscar_estado(A->Q, t->dest->data->string);
+					transicion_encontrada = 1;
+					break;
+				}
+			}
+			t = t->sig;
+		}
+		
+		if (!transicion_encontrada) {
+			printf("[DFA] Rechazada: No hay transicion desde '%s' con '%c'.\n", estado_actual->nom->string, cadena[i]);
+			return 0;
+		}
+		i++;
+	}
+	
+	if (estado_actual != NULL && estado_actual->esfin == 1) {
+		printf("[DFA] Cadena ACEPTADA Termino en: %s\n", estado_actual->nom->string);
+		return 1;
+	} else {
+		printf("[DFA] Cadena RECHAZADA: Termino en estado no final: %s\n", estado_actual ? estado_actual->nom->string : "Nulo");
+		return 0;
+	}
+}
+
+void union_nfa(Tdata* dest, Tdata src) {
+	Tdata aux = src;
+	while (aux != NULL) {
+		if (aux->data != NULL && aux->data->nodeType == STR) {
+			// Creamos un nodo STR nuevo para no compartir memoria que pueda corromperse
+			Tdata nuevo_str = create_str_ast();
+			nuevo_str->string = load2(aux->data->string);
+			
+			// insert_set se encarga de verificar que no se duplique con 'belongs'
+			insert_set(dest, nuevo_str);
+		}
+		aux = aux->next;
+	}
+}
+// Aceptar cadena no determinista
+int aceptar_cadena_nfa(automata* A, const char* cadena) {
+	if (A == NULL) return 0;
+	
+	// Conjunto de estados en los que se encuentra el autómata actualmente
+	Tdata estados_actuales = create_set();
+	
+	Tdata q0_ast = create_str_ast();
+	q0_ast->string = load2(A->q0->string);
+	insert_set(&estados_actuales, q0_ast);
+	
+	int i = 0;
+	while (cadena[i] != '\0') {
+		char simb_act[2] = {cadena[i], '\0'};
+		
+		// Nuevo conjunto vacío para recolectar los destinos de este paso
+		Tdata proximos_estados = create_set(); 
+		
+		Tdata curr = estados_actuales;
+		int transiciones_totales_caracter = 0;
+		
+		// Procesamos todos los estados actuales en paralelo
+		while (curr != NULL) {
+			if (curr->data != NULL) {
+				std* est_nodo = buscar_estado(A->Q, curr->data->string);
+				if (est_nodo != NULL) {
+					transicion* t = est_nodo->delta;
+					while (t != NULL) {
+						if (compare_str(t->simb->string, simb_act) == 0) {
+							// Usamos la unión segura específica para NFA
+							union_nfa(&proximos_estados, t->dest);
+							transiciones_totales_caracter++;
+						}
+						t = t->sig;
+					}
+				}
+			}
+			curr = curr->next;
+		}
+		
+		// Si no se recolectaron estados o el conjunto quedó vacío de datos reales
+		if (proximos_estados == NULL || proximos_estados->data == NULL || transiciones_totales_caracter == 0) {
+			printf("[NFA] Rechazada: El automata se estanco en el caracter '%c'.\n", cadena[i]);
+			return 0;
+		}
+		
+		// Liberamos el conjunto anterior (opcional, para cuidar memoria) y avanzamos
+		estados_actuales = proximos_estados;
+		i++;
+	}
+	
+	// Verificación final de aceptación
+	Tdata curr = estados_actuales;
+	int aceptada = 0;
+	
+	printf("[NFA] Estados alcanzados al final: ");
+	mostrar_set(estados_actuales);
+	printf("\n");
+	
+	while (curr != NULL) {
+		if (curr->data != NULL) {
+			std* est_nodo = buscar_estado(A->Q, curr->data->string);
+			if (est_nodo != NULL && est_nodo->esfin == 1) {
+				aceptada = 1;
+				break; 
+			}
+		}
+		curr = curr->next;
+	}
+	
+	if (aceptada) {
+		printf("[NFA] Cadena ACEPTADA Al menos un estado alcanzado es final.\n");
+		return 1;
+	} else {
+		printf("[NFA] Cadena RECHAZADA: Ninguno de los estados alcanzados es final.\n");
+		return 0;
+	}
+}
