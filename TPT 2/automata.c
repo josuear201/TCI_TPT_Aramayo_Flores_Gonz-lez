@@ -24,7 +24,8 @@ Std nuevo_estado(Tdata nom, Delta delta, int esfin){
     nuevo->nom = nom;
     nuevo->delta = delta;
     nuevo->esfin = esfin;
-    return nuevo;
+    nuevo->sig = NULL;
+	return nuevo;
 }
 void agregar_estado(Std* lista, Std nuevo){
     while(*lista != NULL){
