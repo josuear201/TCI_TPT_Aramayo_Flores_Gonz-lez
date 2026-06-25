@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "String.h" //Operaciones sobre STR
+#include "String.h"
 
 #define STR 1
 #define SET 2
@@ -26,16 +26,10 @@ Tdata create_str_ast();
 Tdata create_list();
 Tdata create_set();
 
-//SUGERENCIAS
-/*
-int compare_str_ast(Tdata s1, Tdata s2) ;
-
-Tdata concat_str_ast(Tdata s1, Tdata s2) ;
-*/
-//cada funcion llama a compare_str_ast y concat_str_ast respectivamente
+//Operaciones sobre STR
+Tdata ing_str_ast();
 int compare_str_ast(Tdata s1, Tdata s2);
-
-str concat_str_ast(Tdata s1, Tdata s2);
+Tdata concat_str_ast(Tdata s1, Tdata s2);
 
 //Operaciones sobre SET
 void insert_set(Tdata* set, Tdata elem);// (sin duplicados)
@@ -46,8 +40,6 @@ void remove_set(Tdata* set, Tdata elem);
 Tdata union_set(Tdata A, Tdata B);
 Tdata intersection_set(Tdata A, Tdata B);
 Tdata difference_set(Tdata A, Tdata B);
-//No hay dato tipo bool en C
-//Cambiar a int
 int subset(Tdata A, Tdata B);
 int equals_set(Tdata A, Tdata B);
 
@@ -59,5 +51,12 @@ Tdata copy_list(Tdata); //(copia profunda)
 Tdata concat(Tdata, Tdata);
 void search(Tdata, Tdata);
 
+//Operaciones generales
+int igual_ast(Tdata a, Tdata b);
+Tdata crear_ast(FILE* f);
+Tdata recorre_lista(Tdata* lista);//devuelve el primer elemento de la lista 
+void union_set2(Tdata* A, Tdata B);
+void mostrar_ast(Tdata ast);
+Tdata ingresar_cadena();
 
 #endif

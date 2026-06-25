@@ -22,6 +22,19 @@ Tdata create_list(){
 	n->next = NULL;
 	return n;
 }
+
+Tdata ing_str_ast(){
+	Tdata nvo;
+	char aux[50];
+	
+	nvo = create_str_ast();
+	
+	scanf("%s", aux);
+	
+	nvo->string = load2(aux);
+	
+	return nvo;
+}
 			 
 void insert_set(Tdata* set, Tdata elem){ 
 	Tdata nvo;
@@ -169,7 +182,7 @@ void append(Tdata* list, Tdata elem){
 	Tdata auxList;
 	if (is_list(*list)!=0){
 		auxList = *list;
-		while (auxList != NULL){
+		while (auxList->next != NULL){
 			auxList = auxList->next;
 		}
 		if (auxList->data == NULL)
@@ -188,6 +201,7 @@ int length(Tdata list){
 	salida = 0;
 	if (is_list(list)!=0){
 		while (list != NULL){
+			if(list->data != NULL)
 			salida++;
 			list = list->next;
 		}
@@ -250,26 +264,26 @@ Tdata concat(Tdata l1, Tdata l2){
 		printf("\nAl menos un elemento ingresado no es una lista");
 	return nuevo;
 }
-int equal_ast(Tdata l1, Tdata l2){
+int igual_ast(Tdata a, Tdata b){
 	int salida;
 	salida = 0;
-	if (l1 != NULL && l2 != NULL){
-		if (l1->nodeType == l2->nodeType){
-			switch (l1->nodeType){
+	if (a != NULL && b != NULL){
+		if (a->nodeType == b->nodeType){
+			switch (a->nodeType){
 			case STR:
-				if (compare_str_ast(l1, l2)==0)
+				if (compare_str_ast(a, b)==0)
 					salida = 1;
 				break;
 			case SET:
-				salida = equals_set(l1, l2);
+				salida = equals_set(a, b);
 				break;
 			case LIST:
-				salida = equals_list(l1, l2);
+				salida = equals_list(a, b);
 				break;
 			}
 		}
 	}
-	else if(l1 == l2)
+	else if(a == b)
 		salida = 1;
 	return salida;
 }
@@ -284,8 +298,7 @@ int equals_list(Tdata l2, Tdata l1){
 			l2 = l2->next;
 		}
 	}
-	else 
-						   salida = 0;
+	else salida = 0;
 	return salida;
 }
 void search(Tdata list, Tdata elem){
@@ -304,17 +317,16 @@ void search(Tdata list, Tdata elem){
 	if (salida == 1)
 		printf("\nEl elemento esta en la lista");
 }
-str concat_str_ast(Tdata s1, Tdata s2) {
+Tdata concat_str_ast(Tdata s1, Tdata s2) {
 	Tdata R;
-	str C;
 	
 	if (s1->nodeType != STR || s2->nodeType != STR) {
-		printf("Error: Los parámetros para concatenar deben ser STR.\n");
+		printf("Error: Los parametros para concatenar deben ser STR.\n");
 		return NULL;
 	}
-	C=concat_str(s1->string, s2->string);
 	
-	R->string=C;
+	R = create_str_ast();
+	R->string = concat_str(s1->string, s2->string);
 	
 	return R;
 }
@@ -330,14 +342,75 @@ int compare_str_ast(Tdata s1, Tdata s2) {
 	return r;
 }
 
-int compare_str_ast(Tdata s1, Tdata s2) {
-	int r;
-	
-	if (s1->nodeType != STR || s2->nodeType != STR) {
-		printf("Error: Intento de comparar tipos que no son STR.\n");
-		r = -1; 
+//Operaciones generales
+Tdata ing_ast(FILE* f){
+	Tdata nodo = NULL;
+	char aux[50];
+	char c = fgetc(f);//lee un caracter del archivo
+	if (c != EOF)
+	switch(c){
+		case '0': return NULL;break;
+		case '1': nodo = create_str_ast();
+			fgets(aux, 50, f);//lee del archivo f hasta el fin de la linea o hasta los primeros 50 caracteres
+			nodo->string = load2(aux);
+			break;
+		case '2': nodo = create_set();
+			nodo->data = ing_ast(FILE* f);
+			insert_set(&nodo, ing_ast(f));
+			break;
+		case '3': nodo = create_list();
+			nodo->data = ing_ast(FILE* f);
+			append(&nodo, ing_ast(FILE* f));
+			break;
 	}
-	r = strcmp(s1->string, s2->string);
+	return nodo;
+}
+Tdata recorre_lista(Tdata* lista){
+	Tdata salida;
+	if (*lista->nodeType != 1){
+		salida = *lista->data;
+		*lista = *lista->next;
+		return NULL;
+	}
+	else return NULL;
+}
+void union_set2(Tdata* A, Tdata B){
+	Tdata aux;
+	aux = B;
+	while(aux!= NULL){
+		insert_set(A,aux->data);
+		aux=aux->next;
+	}
+}
+void mostrar_ast(Tdata ast){
+	if (ast !=NULL){
+		if(ast->dataType == 1)
+			print_string(ast->string); break;
+		else {
+			printf("{");
+			mostrar_ast(ast->data);
+			ast = ast->next;
+			while(ast != NULL){
+				printf(", ");
+				mostrar_ast(ast->data);
+				ast = ast->next;
+			}
+			printf("}");
+		}
+	}
 	
-	return r;
+}
+Tdata ingresar_cadena(){
+	char c;
+	Tdata lista;
+	Tdata s;
+	lista = create_list();
+	c = getchar();
+	while(c != EOF && c != '\n'){
+		s = create_str_ast();
+		s->string = load2(&c);
+		append(&lista, s);
+		c = getchar();
+	}
+	return lista;
 }
