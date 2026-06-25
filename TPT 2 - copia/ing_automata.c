@@ -8,7 +8,7 @@ transicion* ing_transicion(FILE* f){
 	fscanf(f, "%s %s", simb, dest);
 	
 	nvo->simb = create_str_ast();
-	nvo->simb->string = strdup(simb);
+	nvo->simb->string = load2(simb);
 	nvo->dest = create_set();
 	d = create_str_ast();
 	d->string = load2(dest);
